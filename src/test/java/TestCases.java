@@ -25,12 +25,12 @@ public class TestCases extends Data {
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels","root","Password");
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "Password");
 
 
     }
 
-    @Test (priority = 1,enabled = true)
+    @Test(priority = 1, enabled = true)
     public void CreateData() throws SQLException {
 
         String Query = "Insert into customers (customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, city, country, salesRepEmployeeNumber, creditLimit) Values (999, 'Abc Company', 'ali', 'ahmad', '962797700235', '123 Main St', 'Los Angeles', 'United States', 1370, 50000.00) ";
@@ -39,7 +39,7 @@ public class TestCases extends Data {
 
     }
 
-    @Test (priority = 2,enabled = true)
+    @Test(priority = 2, enabled = true)
     public void ReadData() throws SQLException {
 
         String Query = "Select * from customers where customerNumber = 999";
@@ -54,7 +54,7 @@ public class TestCases extends Data {
 
             TheTelephone = rs.getString("phone").toString().trim();
 
-            TheEmail = TheFirstName + TheLastName + RandomNumber + Domain ;
+            TheEmail = TheFirstName + TheLastName + RandomNumber + Domain;
 
             TheAddress = rs.getString("addressLine1").toString().trim();
 
@@ -63,11 +63,10 @@ public class TestCases extends Data {
             Name = TheFirstName + TheLastName + RandomNumber;
 
 
-
         }
     }
 
-    @Test (priority = 3,enabled = true)
+    @Test(priority = 3, enabled = true)
     public void UpdateData() throws SQLException {
 
         String Query = "Update customers set contactLastName = 'Jamal' where customerNumber = 999";
@@ -76,7 +75,7 @@ public class TestCases extends Data {
 
     }
 
-    @Test (priority = 4,enabled = true)
+    @Test(priority = 4, enabled = true)
     public void DeleteData() throws SQLException {
 
         String Query = "Delete from customers where customerNumber = 999";
@@ -85,7 +84,7 @@ public class TestCases extends Data {
 
     }
 
-    @Test (priority = 5,enabled = true)
+    @Test(priority = 5, enabled = true)
     public void SignUpTest() throws InterruptedException {
 
         WebElement LoginOrRegister = driver.findElement(By.linkText("Login or register"));
@@ -158,8 +157,68 @@ public class TestCases extends Data {
 
         Assert.assertEquals(ActualMessage, true);
 
-        //Jamal
 
     }
 
-   }
+    @Test(priority = 6, enabled = true)
+    public void LogoutTest() throws InterruptedException {
+
+        Thread.sleep(2000);
+        driver.findElement(By.partialLinkText("Logo")).click();
+        ;
+
+
+        boolean ActualValueForLogout = driver.getPageSource().contains(ExpectedLogoutMessage);
+
+        Assert.assertEquals(ActualValueForLogout, true);
+    }
+
+    @Test(priority = 7, enabled = true)
+
+    public void Login() {
+
+        WebElement Login = driver.findElement(By.linkText("Login or register"));
+        Login.click();
+
+        WebElement LoginName = driver.findElement(By.cssSelector("#loginFrm_loginname"));
+        WebElement Password = driver.findElement(By.cssSelector("#loginFrm_password"));
+
+        LoginName.sendKeys(Name);
+        Password.sendKeys(ThePassword);
+
+        WebElement LoginButton = driver.findElement(By.cssSelector("button[title='Login']"));
+        LoginButton.click();
+
+        boolean ActualValueForLogin = driver.getPageSource().contains(ExpectedLoginMessage);
+
+        Assert.assertEquals(ActualValueForLogin, true);
+
+
+    }
+
+    @Test(priority = 8, invocationCount = 4, enabled = true)
+    public void AddItemToTheCart() {
+        driver.navigate().to(Url);
+        Random rand = new Random();
+
+        for (int i = 0; i < 10; i++) {
+
+            List<WebElement> items = driver.findElements(By.className("prdocutname"));
+            int randomItem = rand.nextInt(items.size());
+            items.get(randomItem).click();
+
+
+            boolean outOfStock = driver.getPageSource().contains("Out of Stock");
+            boolean blockedProduct = driver.getCurrentUrl().contains("product_id=116");
+
+            if (!outOfStock && !blockedProduct) {
+                driver.findElement(By.cssSelector(".cart")).click();
+                System.out.println("Added to cart: " + driver.getCurrentUrl());
+                return;
+            }
+
+            driver.navigate().back();
+        }
+
+    }
+}

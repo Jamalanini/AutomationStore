@@ -37,6 +37,11 @@ public class Data {
 
     String ExpectedMessage = "Your Account Has Been Created!";
 
+    String ExpectedLogoutMessage = "Account Logout";
+
+    String ExpectedLoginMessage = "My Account";
+
+
 
 
 }
