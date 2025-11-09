@@ -4,6 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -214,11 +215,17 @@ public class TestCases extends Data {
             if (!outOfStock && !blockedProduct) {
                 driver.findElement(By.cssSelector(".cart")).click();
                 System.out.println("Added to cart: " + driver.getCurrentUrl());
+                System.out.println("Item Added to cart: " + items.get(randomItem).getText());
                 return;
             }
 
             driver.navigate().back();
         }
 
+    }
+
+    @AfterTest
+    public void afterTest() {
+        driver.close();
     }
 }
